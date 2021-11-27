@@ -10,6 +10,7 @@
             }
             input {
                 margin: 2px;
+                border: 1px solid black;
             }
         </style>
     </head>
@@ -29,7 +30,6 @@
                 9) adres ipv6
                 10) Numer telefonu
             -->
-            <h1>Hello world!</h1>
             <input pattern="^[a-zA-Z._-]{3,}@[a-zA-Z._-]{3,}\.[a-z]{2,3}$" required placeholder="person@example.com" /><br>
             <input pattern="^\d{2}-\d{3}$" required placeholder="12-345" /><br>
             <input pattern="^[A-Z]{2}-\d{3}-\d{6}-\d$" required placeholder="PL-123-456789-5" /><br>
@@ -39,7 +39,7 @@
             <input pattern="^[A-Z]{1}:\\(windows|winnt|win|dos|msdos)(\\[a-z0-9.-]+)$" required placeholder="C:\windows\qwe" /><br>
             <input pattern="^[A-Z]{1}:\\(([wW][iI][nN][dD][oO][wW][sS])|([wW][iI][nN][nN][tT])|([wW][iI][nN])|([dD][oO][sS])|([mM][sS][dD][oO][sS]))(\\[a-zA-Z0-9.-]+)$" required placeholder="C:\WiNdOwS\asd" /><br>
             <input pattern="^/etc/[a-zA-Z\d.-_]+$" required placeholder="/etc/passwd" /><br>
-            <input pattern="([a-f0-9:]+:+)+[a-f0-9]+" required placeholder="2001:db8::" /><br>
+            <input pattern="^([a-f\d]{1,4})(:([a-f\d]{1,4})){7}$" required placeholder="2001:db8:db8:db8:db8:db8:db8:db8" /><br>
             <input pattern="^(\+\d{1,2} )?\d{3} \d{3} \d{3}$" required placeholder="[+48 ]123 456 789" /><br>
         </form>
     </body>
