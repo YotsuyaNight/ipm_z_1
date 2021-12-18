@@ -5,6 +5,9 @@
             body {
                 margin: 0;
             }
+            button {
+                margin: 12px;
+            }
             .header {
                 width: 100vw;
                 height: 20vh;
@@ -17,22 +20,36 @@
                 width: 100vw;
                 height: 80vh;
                 background: lightgreen;
+                display: flex;
+                justify-content: center;
+                align-items: center;
             }
-            .spawnpoint {
-                width: 100px;
-                height: 100px;
-                border: 2px black solid;
+            .block {
+                width: 50px;
+                height: 50px;
+                border: 1px black solid;
             }
         </style>
         <script>
-            
+            generateBlock = (_) => {
+                if (document.querySelectorAll(".spawnpoint > .block").length > 0) return;
+                block = document.createElement("div")
+                r = Math.random() * 255
+                g = Math.random() * 255
+                b = Math.random() * 255
+                block.style.background = `rgb(${r}, ${g}, ${b})`
+                block.classList.add("block")
+                document.querySelector(".spawnpoint").appendChild(block)
+            }
         </script>
     </head>
     <body>
         <div class="header">
-            <button>Generuj klocek</button>
+            <button onclick="generateBlock(event)">Generuj klocek</button>
             <div class="spawnpoint"></div>
         </div>
-        <div class="platform"></div>
+        <div class="platform">
+            <div class="block" style="background: white;"></div>
+        </div>
     </body>
 </html>
