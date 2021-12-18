@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            li {
+                cursor: pointer;
+                border: 1px black solid;
+                padding: 2px;
+                margin: 2px;
+                width: 150px;
+            }
+        </style>
+    </head>
+    <body>
+        <ol contenteditable="true">
+            <li id="li1" draggable="true" contenteditable="true">Nice element 1</li>
+            <li id="li2" draggable="true" contenteditable="true">Nice element 2</li>
+            <li id="li3" draggable="true" contenteditable="true">Nice element 3</li>
+            <li id="li4" draggable="true" contenteditable="true">Nice element 4</li>
+            <li id="li5" draggable="true" contenteditable="true">Nice element 5</li>
+        </ol>
+        <script>
+            document.querySelectorAll("li").forEach((el) => {
+                el.ondragstart = (ev) => {
+                    ev.currentTarget.style.color = "red"
+                    ev.dataTransfer.setData("content", ev.currentTarget.innerHTML)
+                }
+                el.ondragend = (ev) => {
+                    ev.currentTarget.style.color = "black"
+                }
+                el.ondragenter = (ev) => {
+                    ev.target.style.borderStyle = "dashed"
+                }
+                el.ondragleave = (ev) => {
+                    ev.target.style.borderStyle = "solid"
+                }
+                el.ondrop = (ev) => {
+                    alert("DROPPED")
+                    ev.currentTarget.innerHTML = ev.target.innerHTML
+                    ev.target.innerHTML = ev.dataTransfer.getData("content")
+                }
+            })
+        </script>
+    </body>
+</html>
