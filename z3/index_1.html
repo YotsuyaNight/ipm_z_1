@@ -17,37 +17,40 @@
                 color: red;
             }
         </style>
+        <script>
+            event_ondragstart = (ev) => {
+                ev.currentTarget.classList.add("dragged")
+                ev.dataTransfer.setData("from", ev.currentTarget.id)
+            }
+            event_ondragend = (ev) => {
+                ev.target.classList.remove("dragged")
+            }
+            event_ondragenter = (ev) => {
+                ev.target.classList.add("dragTarget")
+            }
+            event_ondragleave = (ev) => {
+                ev.currentTarget.classList.remove("dragTarget")
+            }
+            event_ondragover = (ev) => {
+                ev.currentTarget.classList.remove("dragged")
+                ev.preventDefault() 
+            }
+            event_ondrop = (ev) => {
+                let from = document.getElementById(ev.dataTransfer.getData("from"))
+                let to = ev.target.innerHTML
+                ev.target.innerHTML = from.innerHTML
+                from.innerHTML = to
+                ev.target.classList.remove("dragTarget")
+            }
+        </script>
     </head>
     <body>
         <ol contenteditable="true">
-            <li id="li1" draggable="true" contenteditable="true">Nice element 1</li>
-            <li id="li2" draggable="true" contenteditable="true">Nice element 2</li>
-            <li id="li3" draggable="true" contenteditable="true">Nice element 3</li>
-            <li id="li4" draggable="true" contenteditable="true">Nice element 4</li>
-            <li id="li5" draggable="true" contenteditable="true">Nice element 5</li>
+            <li id="li1" ondragstart="event_ondragstart(event)" ondragend="event_ondragend(event)" ondragenter="event_ondragenter(event)" ondragleave="event_ondragleave(event)" ondragover="event_ondragover(event)" ondrop="event_ondrop(event)" draggable="true" contenteditable="true">Nice element 1</li>
+            <li id="li2" ondragstart="event_ondragstart(event)" ondragend="event_ondragend(event)" ondragenter="event_ondragenter(event)" ondragleave="event_ondragleave(event)" ondragover="event_ondragover(event)" ondrop="event_ondrop(event)" draggable="true" contenteditable="true">Nice element 2</li>
+            <li id="li3" ondragstart="event_ondragstart(event)" ondragend="event_ondragend(event)" ondragenter="event_ondragenter(event)" ondragleave="event_ondragleave(event)" ondragover="event_ondragover(event)" ondrop="event_ondrop(event)" draggable="true" contenteditable="true">Nice element 3</li>
+            <li id="li4" ondragstart="event_ondragstart(event)" ondragend="event_ondragend(event)" ondragenter="event_ondragenter(event)" ondragleave="event_ondragleave(event)" ondragover="event_ondragover(event)" ondrop="event_ondrop(event)" draggable="true" contenteditable="true">Nice element 4</li>
+            <li id="li5" ondragstart="event_ondragstart(event)" ondragend="event_ondragend(event)" ondragenter="event_ondragenter(event)" ondragleave="event_ondragleave(event)" ondragover="event_ondragover(event)" ondrop="event_ondrop(event)" draggable="true" contenteditable="true">Nice element 5</li>
         </ol>
-        <script>
-            document.querySelectorAll("li").forEach((el) => {
-                el.ondragstart = (ev) => {
-                    ev.currentTarget.classList.add("dragged")
-                    ev.dataTransfer.setData("fromContent", ev.currentTarget.innerHTML)
-                }
-                el.ondragenter = (ev) => {
-                    ev.target.classList.add("dragTarget")
-                }
-                el.ondragleave = (ev) => {
-                    ev.currentTarget.classList.remove("dragTarget")
-                }
-                el.ondragover = (ev) => {
-                    ev.currentTarget.classList.remove("dragged")
-                    ev.preventDefault() 
-                }
-                el.ondrop = (ev) => {
-                    // ev.currentTarget.innerHTML = ev.dataTransfer.getData("toContent")
-                    // ev.target.innerHTML = ev.dataTransfer.getData("fromContent")
-                    // ev.target.classList.remove("dragTarget")
-                }
-            })
-        </script>
     </body>
 </html>
