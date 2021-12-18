@@ -9,6 +9,13 @@
                 margin: 2px;
                 width: 150px;
             }
+            li.dragTarget {
+                border: 1px black dashed;
+            }
+            li.dragged {
+                border: 1px red solid;
+                color: red;
+            }
         </style>
     </head>
     <body>
@@ -22,22 +29,23 @@
         <script>
             document.querySelectorAll("li").forEach((el) => {
                 el.ondragstart = (ev) => {
-                    ev.currentTarget.style.color = "red"
-                    ev.dataTransfer.setData("content", ev.currentTarget.innerHTML)
-                }
-                el.ondragend = (ev) => {
-                    ev.currentTarget.style.color = "black"
+                    ev.currentTarget.classList.add("dragged")
+                    ev.dataTransfer.setData("fromContent", ev.currentTarget.innerHTML)
                 }
                 el.ondragenter = (ev) => {
-                    ev.target.style.borderStyle = "dashed"
+                    ev.target.classList.add("dragTarget")
                 }
                 el.ondragleave = (ev) => {
-                    ev.target.style.borderStyle = "solid"
+                    ev.currentTarget.classList.remove("dragTarget")
+                }
+                el.ondragover = (ev) => {
+                    ev.currentTarget.classList.remove("dragged")
+                    ev.preventDefault() 
                 }
                 el.ondrop = (ev) => {
-                    alert("DROPPED")
-                    ev.currentTarget.innerHTML = ev.target.innerHTML
-                    ev.target.innerHTML = ev.dataTransfer.getData("content")
+                    // ev.currentTarget.innerHTML = ev.dataTransfer.getData("toContent")
+                    // ev.target.innerHTML = ev.dataTransfer.getData("fromContent")
+                    // ev.target.classList.remove("dragTarget")
                 }
             })
         </script>
