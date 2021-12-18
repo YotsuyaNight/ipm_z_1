@@ -18,12 +18,14 @@
             }
         </style>
         <script>
+            var draggedElement;
             event_ondragstart = (ev) => {
                 ev.currentTarget.classList.add("dragged")
-                ev.dataTransfer.setData("from", ev.currentTarget.id)
+                draggedElement = ev.currentTarget
             }
             event_ondragend = (ev) => {
                 ev.target.classList.remove("dragged")
+                draggedElement = null
             }
             event_ondragenter = (ev) => {
                 ev.target.classList.add("dragTarget")
@@ -36,21 +38,21 @@
                 ev.preventDefault() 
             }
             event_ondrop = (ev) => {
-                let from = document.getElementById(ev.dataTransfer.getData("from"))
-                let to = ev.target.innerHTML
-                ev.target.innerHTML = from.innerHTML
-                from.innerHTML = to
+                let dragTarget = ev.target.innerHTML
+                ev.target.innerHTML = draggedElement.innerHTML
+                draggedElement.innerHTML = dragTarget
+                draggedElement = null
                 ev.target.classList.remove("dragTarget")
             }
         </script>
     </head>
     <body>
         <ol contenteditable="true">
-            <li id="li1" ondragstart="event_ondragstart(event)" ondragend="event_ondragend(event)" ondragenter="event_ondragenter(event)" ondragleave="event_ondragleave(event)" ondragover="event_ondragover(event)" ondrop="event_ondrop(event)" draggable="true" contenteditable="true">Nice element 1</li>
-            <li id="li2" ondragstart="event_ondragstart(event)" ondragend="event_ondragend(event)" ondragenter="event_ondragenter(event)" ondragleave="event_ondragleave(event)" ondragover="event_ondragover(event)" ondrop="event_ondrop(event)" draggable="true" contenteditable="true">Nice element 2</li>
-            <li id="li3" ondragstart="event_ondragstart(event)" ondragend="event_ondragend(event)" ondragenter="event_ondragenter(event)" ondragleave="event_ondragleave(event)" ondragover="event_ondragover(event)" ondrop="event_ondrop(event)" draggable="true" contenteditable="true">Nice element 3</li>
-            <li id="li4" ondragstart="event_ondragstart(event)" ondragend="event_ondragend(event)" ondragenter="event_ondragenter(event)" ondragleave="event_ondragleave(event)" ondragover="event_ondragover(event)" ondrop="event_ondrop(event)" draggable="true" contenteditable="true">Nice element 4</li>
-            <li id="li5" ondragstart="event_ondragstart(event)" ondragend="event_ondragend(event)" ondragenter="event_ondragenter(event)" ondragleave="event_ondragleave(event)" ondragover="event_ondragover(event)" ondrop="event_ondrop(event)" draggable="true" contenteditable="true">Nice element 5</li>
+            <li ondragstart="event_ondragstart(event)" ondragend="event_ondragend(event)" ondragenter="event_ondragenter(event)" ondragleave="event_ondragleave(event)" ondragover="event_ondragover(event)" ondrop="event_ondrop(event)" draggable="true" contenteditable="true">Nice element 1</li>
+            <li ondragstart="event_ondragstart(event)" ondragend="event_ondragend(event)" ondragenter="event_ondragenter(event)" ondragleave="event_ondragleave(event)" ondragover="event_ondragover(event)" ondrop="event_ondrop(event)" draggable="true" contenteditable="true">Nice element 2</li>
+            <li ondragstart="event_ondragstart(event)" ondragend="event_ondragend(event)" ondragenter="event_ondragenter(event)" ondragleave="event_ondragleave(event)" ondragover="event_ondragover(event)" ondrop="event_ondrop(event)" draggable="true" contenteditable="true">Nice element 3</li>
+            <li ondragstart="event_ondragstart(event)" ondragend="event_ondragend(event)" ondragenter="event_ondragenter(event)" ondragleave="event_ondragleave(event)" ondragover="event_ondragover(event)" ondrop="event_ondrop(event)" draggable="true" contenteditable="true">Nice element 4</li>
+            <li ondragstart="event_ondragstart(event)" ondragend="event_ondragend(event)" ondragenter="event_ondragenter(event)" ondragleave="event_ondragleave(event)" ondragover="event_ondragover(event)" ondrop="event_ondrop(event)" draggable="true" contenteditable="true">Nice element 5</li>
         </ol>
     </body>
 </html>
