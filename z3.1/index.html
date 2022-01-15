@@ -12,7 +12,7 @@
                 width: 100vw;
                 height: 20vh;
                 background: lightblue;
-                justify-content: center;
+                justify-content: left;
                 align-items: center;
                 display: flex;
             }
@@ -27,7 +27,7 @@
             }
         </style>
         <script>
-            isBetween = (x, a, b) => x > a && x < b
+            isBetween = (x, a, b) => x >= a && x <= b
 
             generateBlock = (_) => {
                 if (document.querySelectorAll(".spawnpoint > .block").length > 0) return;
@@ -50,8 +50,7 @@
             blockOnDragStart = (ev) => {
                 currentDrag = ev.currentTarget;
                 currentDragPos = currentDrag.getBoundingClientRect()
-                currentDragElementOffset = {x: ev.clientX - currentDragPos.x, y: ev.clientY - currentDragPos.y}
-                console.log(currentDragElementOffset)
+                currentDragElementOffset = {x: parseInt(ev.clientX - currentDragPos.x), y: parseInt(ev.clientY - currentDragPos.y)}
                 currentDrag.style.position = "absolute"
             }
 
@@ -64,6 +63,43 @@
                 ev.preventDefault()
             }
 
+            removeCollisions = (blockPos) => {
+                let didCollide = false
+                document.querySelectorAll(".block").forEach(pBlock => { 
+                    let top = pBlock.getBoundingClientRect().y
+                    let bottom = pBlock.getBoundingClientRect().y + 50
+                    let left = pBlock.getBoundingClientRect().x
+                    let right = pBlock.getBoundingClientRect().x + 50
+                    // Top-left
+                    if (isBetween(blockPos.x, left, right) && isBetween(blockPos.y, top, bottom)) {
+                        if (blockPos.x - left > blockPos.y - top) blockPos.x = right + 1
+                        else blockPos.y = bottom + 1
+                        didCollide = true
+                    }
+                    // Top-right
+                    else if (isBetween(blockPos.x2, left, right) && isBetween(blockPos.y, top, bottom)) {
+                        if (right - blockPos.x2 > blockPos.y - top) blockPos.x = left - 51
+                        else blockPos.y = bottom + 1
+                        didCollide = true
+                    }
+                    // Bottom-left
+                    else if (isBetween(blockPos.x, left, right) && isBetween(blockPos.y2, top, bottom)) {
+                        if (blockPos.x - left > bottom - blockPos.y2) blockPos.x = right + 1
+                        else blockPos.y = top - 51
+                        didCollide = true
+                    }
+                    // Bottom-right
+                    else if (isBetween(blockPos.x2, left, right) && isBetween(blockPos.y2, top, bottom)) {
+                        if (right - blockPos.x2 > bottom - blockPos.y2) blockPos.x = left - 51
+                        else blockPos.y = top - 51
+                        didCollide = true
+                    }
+                    blockPos.x2 = blockPos.x + 50
+                    blockPos.y2 = blockPos.y + 50
+                })
+                return didCollide
+            }
+
             platformOnDrop = (ev) => {
                 currentDrag.parentNode.removeChild(currentDrag)
                 let blockPos = {
@@ -72,33 +108,12 @@
                     y: ev.clientY - currentDragElementOffset.y,
                     y2: ev.clientY - currentDragElementOffset.y + 50,
                 }
-                document.querySelectorAll(".block").forEach(pBlock => {
-                    let top = pBlock.getBoundingClientRect().y
-                    let bottom = pBlock.getBoundingClientRect().y + 50
-                    let left = pBlock.getBoundingClientRect().x
-                    let right = pBlock.getBoundingClientRect().x + 50
-                    // Top-left
-                    if (isBetween(blockPos.x, left, right) && isBetween(blockPos.y, top, bottom)) {
-                        if (blockPos.x - left > blockPos.y - top) blockPos.x = right
-                        else blockPos.y = bottom
-                    }
-                    // Top-right
-                    else if (isBetween(blockPos.x2, left, right) && isBetween(blockPos.y, top, bottom)) {
-                        if (right - blockPos.x2 > blockPos.y - top) blockPos.x = left - 50
-                        else blockPos.y = bottom
-                    }
-                    // Bottom-left
-                    else if (isBetween(blockPos.x, left, right) && isBetween(blockPos.y2, top, bottom)) {
-                        if (blockPos.x - left > bottom - blockPos.y2) blockPos.x = right
-                        else blockPos.y = top - 50
-                    }
-                    // Bottom-right
-                    else if (isBetween(blockPos.x2, left, right) && isBetween(blockPos.y2, top, bottom)) {
-                        if (right - blockPos.x2 > bottom - blockPos.y2)blockPos.x = left - 50
-                        else blockPos.y = top - 50
-                    }
-                    
-                })
+                let hasCollisions = true
+                let i = 0
+                while (hasCollisions && i < 200) {
+                    hasCollisions = removeCollisions(blockPos)
+                    i++
+                }
                 document.querySelector(".platform").appendChild(currentDrag)
                 currentDrag.style.left = blockPos.x + "px"
                 currentDrag.style.top = blockPos.y + "px"
