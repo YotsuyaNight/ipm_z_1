@@ -27,6 +27,8 @@
             }
         </style>
         <script>
+            isBetween = (x, a, b) => x > a && x < b
+
             generateBlock = (_) => {
                 if (document.querySelectorAll(".spawnpoint > .block").length > 0) return;
                 block = document.createElement("div")
@@ -37,42 +39,69 @@
                 block.classList.add("block")
                 block.ondragstart = blockOnDragStart
                 block.ondragover = blockOnDragOver
-                block.ondrop = blockOnDrop
                 block.ondragend = blockOnDragEnd
                 block.draggable = true
-                block.style.position = "relative"
                 document.querySelector(".spawnpoint").appendChild(block)
             }
 
             var currentDrag = null
+            var currentDragElementOffset = {x: 0, y: 0}
 
             blockOnDragStart = (ev) => {
                 currentDrag = ev.currentTarget;
+                currentDragPos = currentDrag.getBoundingClientRect()
+                currentDragElementOffset = {x: ev.clientX - currentDragPos.x, y: ev.clientY - currentDragPos.y}
+                console.log(currentDragElementOffset)
+                currentDrag.style.position = "absolute"
             }
 
             blockOnDragEnd = (ev) => {
                 currentDrag = null;
+                currentDragElementOffset = {x: 0, y: 0}
             }
 
             blockOnDragOver = (ev) => {
                 ev.preventDefault()
             }
 
-            blockOnDrop = (ev) => {
-                currentDrag.parentNode.removeChild(currentDrag)
-                document.querySelector(".platform").appendChild(currentDrag)
-                block.style.position = "absolute"
-                currentDrag.style.left = ev.target.style.left
-                currentDrag.style.top = parseFloat(ev.target.style.top) - 50 + "px"
-                ev.stopPropagation()
-            }
-
             platformOnDrop = (ev) => {
                 currentDrag.parentNode.removeChild(currentDrag)
+                let blockPos = {
+                    x: ev.clientX - currentDragElementOffset.x,
+                    x2: ev.clientX - currentDragElementOffset.x + 50,
+                    y: ev.clientY - currentDragElementOffset.y,
+                    y2: ev.clientY - currentDragElementOffset.y + 50,
+                }
+                document.querySelectorAll(".block").forEach(pBlock => {
+                    let top = pBlock.getBoundingClientRect().y
+                    let bottom = pBlock.getBoundingClientRect().y + 50
+                    let left = pBlock.getBoundingClientRect().x
+                    let right = pBlock.getBoundingClientRect().x + 50
+                    // Top-left
+                    if (isBetween(blockPos.x, left, right) && isBetween(blockPos.y, top, bottom)) {
+                        if (blockPos.x - left > blockPos.y - top) blockPos.x = right
+                        else blockPos.y = bottom
+                    }
+                    // Top-right
+                    else if (isBetween(blockPos.x2, left, right) && isBetween(blockPos.y, top, bottom)) {
+                        if (right - blockPos.x2 > blockPos.y - top) blockPos.x = left - 50
+                        else blockPos.y = bottom
+                    }
+                    // Bottom-left
+                    else if (isBetween(blockPos.x, left, right) && isBetween(blockPos.y2, top, bottom)) {
+                        if (blockPos.x - left > bottom - blockPos.y2) blockPos.x = right
+                        else blockPos.y = top - 50
+                    }
+                    // Bottom-right
+                    else if (isBetween(blockPos.x2, left, right) && isBetween(blockPos.y2, top, bottom)) {
+                        if (right - blockPos.x2 > bottom - blockPos.y2)blockPos.x = left - 50
+                        else blockPos.y = top - 50
+                    }
+                    
+                })
                 document.querySelector(".platform").appendChild(currentDrag)
-                block.style.position = "absolute"
-                currentDrag.style.left = ev.clientX + "px"
-                currentDrag.style.top = ev.clientY + "px"
+                currentDrag.style.left = blockPos.x + "px"
+                currentDrag.style.top = blockPos.y + "px"
             }
         </script>
     </head>
