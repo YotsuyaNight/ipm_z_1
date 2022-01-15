@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body {
+                margin: 0;
+            }
+            button {
+                margin: 12px;
+            }
+            .header {
+                width: 100vw;
+                height: 20vh;
+                background: lightblue;
+                justify-content: center;
+                align-items: center;
+                display: flex;
+            }
+            .platform {
+                width: 100vw;
+                height: 80vh;
+                background: white;
+            }
+            .block {
+                width: 50px;
+                height: 50px;
+            }
+        </style>
+        <script>
+            generateBlock = (_) => {
+                if (document.querySelectorAll(".spawnpoint > .block").length > 0) return;
+                block = document.createElement("div")
+                r = Math.random() * 255
+                g = Math.random() * 255
+                b = Math.random() * 255
+                block.style.background = `rgb(${r}, ${g}, ${b})`
+                block.classList.add("block")
+                block.ondragstart = blockOnDragStart
+                block.ondragover = blockOnDragOver
+                block.ondrop = blockOnDrop
+                block.ondragend = blockOnDragEnd
+                block.draggable = true
+                block.style.position = "relative"
+                document.querySelector(".spawnpoint").appendChild(block)
+            }
+
+            var currentDrag = null
+
+            blockOnDragStart = (ev) => {
+                currentDrag = ev.currentTarget;
+            }
+
+            blockOnDragEnd = (ev) => {
+                currentDrag = null;
+            }
+
+            blockOnDragOver = (ev) => {
+                ev.preventDefault()
+            }
+
+            blockOnDrop = (ev) => {
+                currentDrag.parentNode.removeChild(currentDrag)
+                document.querySelector(".platform").appendChild(currentDrag)
+                block.style.position = "absolute"
+                currentDrag.style.left = ev.target.style.left
+                currentDrag.style.top = parseFloat(ev.target.style.top) - 50 + "px"
+                ev.stopPropagation()
+            }
+
+            platformOnDrop = (ev) => {
+                currentDrag.parentNode.removeChild(currentDrag)
+                document.querySelector(".platform").appendChild(currentDrag)
+                block.style.position = "absolute"
+                currentDrag.style.left = ev.clientX + "px"
+                currentDrag.style.top = ev.clientY + "px"
+            }
+        </script>
+    </head>
+    <body>
+        <div class="header">
+            <button onclick="generateBlock(event)">Generuj klocek</button>
+            <div class="spawnpoint"></div>
+        </div>
+        <div class="platform" ondrop="platformOnDrop(event)" ondragover="blockOnDragOver(event)"></div>
+    </body>
+</html>
